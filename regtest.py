@@ -49,15 +49,15 @@ def find_build_dirs(tests):
     last_safe = False
 
     for obj in tests:
-        
+
         # keep track of the build directory and which source tree it is
         # in (e.g. the extra build dir)
-        
+
         # first find the list of unique build directories
         dir_pair = (obj.buildDir, obj.extra_build_dir)
         if build_dirs.count(dir_pair) == 0:
             build_dirs.append(dir_pair)
-            
+
         # re-make all problems that specify an extra compile argument,
         # and the test that comes after, just to make sure that any
         # unique build commands are seen.
@@ -67,9 +67,9 @@ def find_build_dirs(tests):
                 obj.reClean = 0
             else:
                 last_safe = True
-                
+
     return build_dirs
-                
+
 def cmake_setup(suite):
     "Setup for cmake"
 
@@ -557,6 +557,9 @@ def test_suite(argv):
         if not test.compile_successful:
             error_msg = "ERROR: compilation failed"
             report.report_single_test(suite, test, test_list, failure_msg=error_msg)
+            # Print compilation error message (useful for Travis tests)
+            with open(coutfile) as f:
+                print( f.read() )
             continue
 
         if test.compileTest:
